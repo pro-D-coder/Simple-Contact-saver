@@ -10,6 +10,10 @@ GET_ALL_contact = "SELECT * FROM contact;"
 
 GET_contact_BY_NUMBER = "SELECT * FROM contact WHERE number = ?;"
 
+DELETE_BY_NAME = "DELETE FROM contact WHERE name = ?;"
+
+DELETE_BY_NUMBER = "DELETE FROM contact WHERE number = ?;"
+
 def connect():
     return sqlite3.connect("data.db")
 
@@ -32,3 +36,11 @@ def get_all_contact(connection):
 def search_by_number(connection, number):
     with connection:
         return connection.execute(GET_contact_BY_NUMBER,(number,))
+
+def delete_by_name(connection, name):
+    with connection:
+        connection.execute(DELETE_BY_NAME, (name, ))
+
+def delete_by_number(connection, number):
+    with connection:
+        connection.execute(DELETE_BY_NUMBER, (number, ))
