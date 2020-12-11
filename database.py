@@ -1,34 +1,34 @@
 import sqlite3
 
-CREATE_TABLE_CONTECT = "CREATE TABLE IF NOT EXISTS contect (id INTEGER PRIMARY KEY, name TEXT, number INTEGER,nickname TEXT);"
+CREATE_TABLE_contact = "CREATE TABLE IF NOT EXISTS contact (id INTEGER PRIMARY KEY, name TEXT, number INTEGER,nickname TEXT);"
 
-INSERT_CONTECT = "INSERT INTO contect (name, number, nickname) VALUES (?, ?, ?);"
+INSERT_contact = "INSERT INTO contact (name, number, nickname) VALUES (?, ?, ?);"
 
-GET_CONTECT_BY_NAME = "SELECT * FROM contect WHERE name = ?;"
+GET_contact_BY_NAME = "SELECT * FROM contact WHERE name = ?;"
 
-GET_ALL_CONTECT = "SELECT * FROM contect;"
+GET_ALL_contact = "SELECT * FROM contact;"
 
-GET_CONTECT_BY_NUMBER = "SELECT * FROM contect WHERE number = ?;"
+GET_contact_BY_NUMBER = "SELECT * FROM contact WHERE number = ?;"
 
 def connect():
     return sqlite3.connect("data.db")
 
 def Create_tables(connection):
     with connection:
-        connection.execute(CREATE_TABLE_CONTECT)
+        connection.execute(CREATE_TABLE_contact)
 
-def add_contect(connection, name, number, nickname):
+def add_contact(connection, name, number, nickname):
     with connection:
-        connection.execute(INSERT_CONTECT, (name, number, nickname))
+        connection.execute(INSERT_contact, (name, number, nickname))
 
 def search_by_name(connection, name):
     with connection:
-        return connection.execute(GET_CONTECT_BY_NAME, (name,)).fetchall()
+        return connection.execute(GET_contact_BY_NAME, (name,)).fetchall()
 
 def get_all_contact(connection):
     with connection:
-        return connection.execute(GET_ALL_CONTECT).fetchall()
+        return connection.execute(GET_ALL_contact).fetchall()
 
 def search_by_number(connection, number):
     with connection:
-        return connection.execute(GET_CONTECT_BY_NUMBER,(number,))
+        return connection.execute(GET_contact_BY_NUMBER,(number,))
