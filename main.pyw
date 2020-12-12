@@ -25,7 +25,37 @@ def insert_contact():
     h = image_render("Image\\insert_bg.jpg").height()                                                                    #
     insert_win.geometry('%dx%d+0+0' % (w,h))                             # setting the size of window equal to bg image size)
     
+    #Entry and Label for name .
+    name_entry = tk.Entry(
+        insert_win,
+        font = ("Arial", 12,"bold"),
+        bd = 0, 
+        bg = "#1c1c1a",
+        width = 27,
+        fg = "white",)
+    name_label = tk.Label(
+        insert_win, 
+        text = "NAME :", 
+        bg = "white", 
+        font = ("Times new roman", 15),)
+    
+    number_entry = tk.Entry(
+        insert_win,
+        font = ("Arial", 12,"bold"),
+        bd = 0, 
+        bg = "#1c1c1a",
+        width = 10,
+        fg = "white",)
+    number_label = tk.Label(
+        insert_win, 
+        text = "NUMBER :", 
+        bg = "white", 
+        font = ("Times new roman", 15),)
 
+    number_label.place(x = 299, y = 140)
+    number_entry.place(x = 400, y = 140,height = 30,width = 240)
+    name_label.place(x = 300, y = 60)
+    name_entry.place(x = 395, y = 60,height = 30)
     bg_label.place(x = 0, y = 0)
     insert_win.mainloop()
 
