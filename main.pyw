@@ -2,9 +2,20 @@ import database   # importing database.py(user defined) file for database intera
 import tkinter as tk  #importing Tkinter for GUI.
 from PIL import ImageTk, Image #importing PIL for rendering image.
 
+
+# function that return rendered image.
+def image_render(path):
+    #function that render any image.
+    image = Image.open(path) 
+    randered_image = ImageTk.PhotoImage(image)
+    return randered_image
+
 # function that insert new contact.
 def insert_contact():
-    pass
+    wel_scr.destroy()  #closing the first window
+    global insert_win
+    insert_win = tk.Tk()
+    insert_win.title("INSERT CONTACT")
 
 # Function that search contact
 def search_contact():
@@ -14,17 +25,11 @@ def search_contact():
 def delete_contact():
     pass
 
-# function that return rendered image.
-def image_render(path):
-    #function that render any image.
-    image = Image.open(path) 
-    randered_image = ImageTk.PhotoImage(image)
-    return randered_image
 
 def menu():  
     connection = database.connect()
     database.Create_tables(connection)
-    
+    global wel_scr
     wel_scr = tk.Tk() #making a tkinter object
     wel_scr.title("Contact Saver By D")  #title of application
     
