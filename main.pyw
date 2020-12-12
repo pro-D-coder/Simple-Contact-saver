@@ -24,8 +24,16 @@ def menu():
     wel_scr.minsize(655,784)
     wel_scr.maxsize(655,784)
 
-    button = tk.Button(master = wel_scr)
-
+    #
+    insert_button = tk.Button(
+        wel_scr,
+        text = "INSERT NEW CONTACT", 
+        bg = "black",
+        fg = "white",
+        padx = 20,
+        pady = 20,
+        font = ("Arial", 12, "bold"))
+    insert_button.place(x = 23, y = 80)
     bg_label.place(x = 0, y = 0)
     wel_scr.mainloop()
 
