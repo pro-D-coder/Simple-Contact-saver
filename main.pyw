@@ -14,8 +14,20 @@ def image_render(path):
 def insert_contact():
     wel_scr.destroy()  #closing the first window
     global insert_win
-    insert_win = tk.Tk()
-    insert_win.title("INSERT CONTACT")
+    insert_win = tk.Tk() #making a tkinter object
+    insert_win.title("INSERT CONTACT")  #title of window
+    
+    image = Image.open("Image\\insert_bg.jpg")                # Background Image for main window ----
+    randered_image = ImageTk.PhotoImage(image)                                                      #
+    bg_label = tk.Label(insert_win, image = randered_image)   #--------------- End Here--------------
+    
+    w = image_render("Image\\insert_bg.jpg").width()           #taking the height and width of bg image for size of window                                                           
+    h = image_render("Image\\insert_bg.jpg").height()                                                                    #
+    insert_win.geometry('%dx%d+0+0' % (w,h))                             # setting the size of window equal to bg image size)
+    
+
+    bg_label.place(x = 0, y = 0)
+    insert_win.mainloop()
 
 # Function that search contact
 def search_contact():
