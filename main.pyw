@@ -5,7 +5,6 @@ from PIL import ImageTk, Image #importing PIL for rendering image.
 
 # function that return rendered image.
 def image_render(path):
-    #function that render any image.
     image = Image.open(path) 
     randered_image = ImageTk.PhotoImage(image)
     return randered_image
@@ -51,7 +50,24 @@ def insert_contact():
         text = "NUMBER :", 
         bg = "white", 
         font = ("Times new roman", 15),)
+    
+    nickname_entry = tk.Entry(
+        insert_win,
+        font = ("Arial", 12,"bold"),
+        bd = 0, 
+        bg = "#1c1c1a",
+        width = 10,
+        fg = "white",)
+    nickname_label = tk.Label(
+        insert_win, 
+        text = "NICKNAME :", 
+        bg = "white", 
+        font = ("Times new roman", 15),)
+    insert_button = tk.Button(insert_win,)
 
+    insert_button.place(x = 460, y = 300, width = 100, height = 100)
+    nickname_entry.place(x = 440, y = 230,height = 30,width = 200)
+    nickname_label.place(x = 299, y = 230)
     number_label.place(x = 299, y = 140)
     number_entry.place(x = 400, y = 140,height = 30,width = 240)
     name_label.place(x = 300, y = 60)
