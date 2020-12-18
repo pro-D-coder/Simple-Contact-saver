@@ -81,17 +81,18 @@ def insert_window():
         image = r_button_image,
         relief = tk.FLAT,
         bd = 0, 
-        command = lambda:database.add_contact(connection, name.get(), number.get(), nickname.get()), #passing values to addcontact function
+        command = lambda:database.add_contact(connection, name.get().strip(), number.get().strip(), nickname.get().strip()), #passing values to addcontact function
         )
 
-    insert_button.place(x = 410, y = 370,height = 70, width = 160)
-    nickname_entry.place(x = 440, y = 230,height = 30,width = 200)
-    nickname_label.place(x = 299, y = 230)
-    number_label.place(x = 299, y = 140)
-    number_entry.place(x = 400, y = 140,height = 30,width = 240)
-    name_label.place(x = 300, y = 60)
-    name_entry.place(x = 395, y = 60,height = 30)
-    bg_label.place(x = 0, y = 0)
+    insert_button.place(x = 410, y = 370,height = 70, width = 160) # place all label and widgets in window 
+    nickname_entry.place(x = 440, y = 230,height = 30,width = 200)                                        #
+    nickname_label.place(x = 299, y = 230)                                                                #
+    number_label.place(x = 299, y = 140)                                                                  #
+    number_entry.place(x = 400, y = 140,height = 30,width = 240)                                          #
+    name_label.place(x = 300, y = 60)                                                                     #
+    name_entry.place(x = 395, y = 60,height = 30)                                                         #
+    bg_label.place(x = 0, y = 0)                                                                          #
+                                                                  # end here
     insert_win.mainloop()
 
 # Function that search contact
