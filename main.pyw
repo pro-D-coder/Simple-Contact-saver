@@ -2,6 +2,7 @@ import database   # importing database.py(user defined) file for database intera
 import tkinter as tk  #importing Tkinter for GUI.
 from PIL import ImageTk, Image #importing PIL for rendering image.
 
+        
 #making connection for database
 connection = database.connect()
 database.Create_tables(connection)
@@ -83,8 +84,19 @@ def insert_window():
         bd = 0, 
         command = lambda:database.add_contact(connection, name.get().strip(), number.get().strip(), nickname.get().strip()), #passing values to addcontact function
         )
-
-    insert_button.place(x = 410, y = 370,height = 70, width = 160) # place all label and widgets in window 
+    back_button = tk.Button(
+        master=insert_win,
+        text = "Back",
+        bd = 0,
+        relief  = tk.FLAT,
+        command = menu,
+        bg = "#d8d8d8",
+        padx = 20,
+        pady = 15,
+        
+    )
+    
+    insert_button.place(x = 410, y = 370,height = 70, width = 160) # placing all label and widgets in window 
     nickname_entry.place(x = 440, y = 230,height = 30,width = 200)                                        #
     nickname_label.place(x = 299, y = 230)                                                                #
     number_label.place(x = 299, y = 140)                                                                  #
@@ -92,7 +104,7 @@ def insert_window():
     name_label.place(x = 300, y = 60)                                                                     #
     name_entry.place(x = 395, y = 60,height = 30)                                                         #
     bg_label.place(x = 0, y = 0)                                                                          #
-                                                                  # end here
+    back_button.place(x = 585, y = 525)                                                          # end here
     insert_win.mainloop()
 
 # Function that search contact
