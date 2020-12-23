@@ -1,9 +1,9 @@
 import database   # importing database.py(user defined) file for database interaction.
-import tkinter as tk  #importing Tkinter for GUI.
-from PIL import ImageTk, Image #importing PIL for rendering image.
+import tkinter as tk  # importing Tkinter for GUI.
+from PIL import ImageTk, Image # importing PIL for rendering image.
 
         
-#making connection for database
+# making connection for database
 connection = database.connect()
 database.Create_tables(connection)
 
@@ -15,23 +15,23 @@ def image_render(path):
 
 # function that insert new contact.
 def insert_window():
-    wel_scr.destroy()  #closing the first window
+    wel_scr.destroy()  # closing the first window
     global insert_win
-    insert_win = tk.Tk() #making a tkinter object
-    insert_win.title("INSERT CONTACT")  #title of window
+    insert_win = tk.Tk() # making a tkinter object
+    insert_win.title("INSERT CONTACT")  # title of window
     
     image = Image.open("insert_bg.jpg")                # Background Image for main window ----
     randered_image = ImageTk.PhotoImage(image)                                                      #
     bg_label = tk.Label(insert_win, image = randered_image)   #--------------- End Here--------------
     
-    w = image_render("insert_bg.jpg").width()           #taking the height and width of bg image for size of window                                                           
+    w = image_render("insert_bg.jpg").width()           # taking the height and width of bg image for size of window                                                           
     h = image_render("insert_bg.jpg").height()                                                                    #
     insert_win.geometry('%dx%d+0+0' % (w,h))                             # setting the size of window equal to bg image size)
     
     name =  tk.StringVar()  #variable for storing name passed from name entry
     number =  tk.StringVar() #variable for storing number passed from number entry
     nickname = tk.StringVar() #variable for storing nickname passed from nickname entry
-    #Entry and Label for name .
+    # Entry and Label for name .
     name_entry = tk.Entry(
         insert_win,
         font = ("Arial", 12,"bold"),
@@ -46,7 +46,7 @@ def insert_window():
         bg = "white", 
         font = ("Times new roman", 15),)
     
-    #Entry and Label for Number
+    # Entry and Label for Number
     number_entry = tk.Entry(
         insert_win,
         font = ("Arial", 12,"bold"),
@@ -61,7 +61,7 @@ def insert_window():
         bg = "white", 
         font = ("Times new roman", 15),)
     
-    #Entry and Label for Nickname
+    # Entry and Label for Nickname
     nickname_entry = tk.Entry(
         insert_win,
         font = ("Arial", 12,"bold"),
@@ -75,14 +75,16 @@ def insert_window():
         text = "NICKNAME :", 
         bg = "white", 
         font = ("Times new roman", 15),)
-    #insert button for appending data in database
+    # insert button for appending data in database
     button_image = Image.open("insert.png")
     r_button_image = ImageTk.PhotoImage(button_image)
     insert_button = tk.Button(insert_win,
         image = r_button_image,
         relief = tk.FLAT,
         bd = 0, 
-        command = lambda:database.add_contact(connection, name.get().strip(), number.get().strip(), nickname.get().strip()), #passing values to addcontact function
+        command = lambda:database.add_contact(connection, name.get().strip(),
+         number.get().strip(),
+          nickname.get().strip()), # passing values to addcontact function
         )
     back_button = tk.Button(
         master=insert_win,
@@ -109,7 +111,73 @@ def insert_window():
 
 # Function that search contact
 def search_window():
-    pass
+    wel_scr.destroy()  #closing the first window
+    global search_win
+    search_win = tk.Tk() #making a tkinter object
+    search_win.title("SEARCH CONTACT")  #title of window
+    
+    image = Image.open("insert_bg.jpg")                # Background Image for main window ----
+    randered_image = ImageTk.PhotoImage(image)                                                      #
+    bg_label = tk.Label(search_win, image = randered_image)   #--------------- End Here--------------#
+    
+    w = image_render("insert_bg.jpg").width()           # taking the height and width of bg image for size of window                                                           
+    h = image_render("insert_bg.jpg").height()                                                                    #
+    search_win.geometry('%dx%d+0+0' % (w,h))                             # setting the size of window equal to bg image size)
+    
+    check_by = tk.StringVar()  # variable that store user selection for searching by name, number
+    check_by.set("name")    # setting variable to name radio button
+    entry = tk.StringVar() # variable that store user entry for searching
+    event_listner = tk.Event()
+    #name radio_button
+    name_radio_button = tk.Radiobutton(search_win,
+     text = "Name", 
+     value = "name",
+     variable = check_by,
+     command = lambda:check_by.set("name")
+     )
+     #number radio_button
+    number_radio_button = tk.Radiobutton(search_win,
+     text = "Number",
+     value = "number",
+     variable = check_by,
+     command = lambda:check_by.set("number")
+     )
+    #Entry and Label for searching
+    s_entry = tk.Entry(
+        search_win,
+        font = ("Arial", 12,"bold"),
+        bd = 0, 
+        bg = "#1c1c1a",
+        width = 27,
+        fg = "white",
+        textvariable = entry,
+    )
+    s_entry_label = tk.Label(
+    search_win, 
+    text = "Entry :", 
+    bg = "white", 
+    font = ("Times new roman", 18,"bold"),)
+    
+    # back Button
+    back_button = tk.Button(
+    master=search_win,
+    text = "Back",
+    bd = 0,
+    relief  = tk.FLAT,
+    command = lambda:menu(),
+    bg = "#d8d8d8",
+    padx = 20,
+    pady = 15,
+    )
+
+    bg_label.place(x = 0, y = 0)
+    name_radio_button.place(x = 400, y = 120)
+    number_radio_button.place(x = 500, y = 120)
+    s_entry.place(x = 395, y = 60,height = 30)
+    back_button.place(x = 585, y = 525)
+    s_entry_label.place(x = 300, y = 59)
+
+    search_win.mainloop()
 
 # Function that delete contact
 def delete_window():
@@ -127,7 +195,7 @@ def menu():
     
     w = image_render("BG.jpg").width()                      #taking the height and width of bg image for size of window                                                           
     h = image_render("BG.jpg").height()                                                                                #
-    wel_scr.geometry('%dx%d+0+0' % (w,h))                          # setting the size of window equal to bg image size
+    wel_scr.geometry('%dx%d+0+0' % (w,h))                   # setting the size of window equal to bg image size
     wel_scr.minsize(655,784)
     wel_scr.maxsize(655,784)
 
