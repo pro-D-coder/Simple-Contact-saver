@@ -39,17 +39,27 @@ def add_contact(connection, name, number, nickname):
             if ask == 'yes':
                 cur.execute(INSERT_contact, (name, number, nickname))
                 cur.close()
-def search_by_name(connection, name):
-    with connection:
-        return connection.execute(GET_contact_BY_NAME, (name,)).fetchall()
-
 def get_all_contact(connection):
     with connection:
         return connection.execute(GET_ALL_contact).fetchall()
 
-def search_by_number(connection, number):
-    with connection:
-        return connection.execute(GET_contact_BY_NUMBER,(number,))
+def search_by_choice(connection, entry, check_by):
+    if(check_by == "name"):
+        with connection:
+            cur = connection.cursor()
+            search_result = cur.execute(GET_contact_BY_NAME, (entry,)).fetchone()
+            if search_result != None:
+                messagebox.showinfo("Contact Information","Name: "+ str(search_result[1]) +"\nNumber: " + str(search_result[2]) + "\nNickname: " + str(search_result[3]))
+            else:
+                messagebox.showerror("No contact","Name Not Exist!!")
+    else:
+        with connection:
+            cur = connection.cursor()
+            search_result = cur.execute(GET_contact_BY_NUMBER, (entry,)).fetchone()
+            if search_result != None:
+                messagebox.showinfo("Contact Information","Name: "+ str(search_result[1]) +"\nNumber: " + str(search_result[2]) + "\nNickname: " + str(search_result[3]))
+            else:
+                messagebox.showerror("No contact","Number Not Exist!!")
 
 def delete_by_name(connection, name):
     with connection:

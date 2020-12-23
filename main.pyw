@@ -126,6 +126,7 @@ def search_window():
     
     check_by = tk.StringVar()  # variable that store user selection for searching by name, number
     check_by.set("name")    # setting variable to name radio button
+    global entry
     entry = tk.StringVar() # variable that store user entry for searching
     event_listner = tk.Event()
     #name radio_button
@@ -157,6 +158,13 @@ def search_window():
     text = "Entry :", 
     bg = "white", 
     font = ("Times new roman", 18,"bold"),)
+
+    #label for searching option
+    opt_label = tk.Label(search_win,
+    text = "Search By: ",
+    font = ("Times new roman", 12),
+    bg = "white"
+    )
     
     # back Button
     back_button = tk.Button(
@@ -169,13 +177,27 @@ def search_window():
     padx = 20,
     pady = 15,
     )
+    def setandget(check_by,entry):
+        entry.set("")
+        return check_by.get().strip()
+    #image for search Button
+    search_image = Image.open("search.png")
+    search_image = ImageTk.PhotoImage(search_image)
+    search_button = tk.Button(search_win,
+    image = search_image,
+    relief = tk.FLAT,
+    bd = 0,
+    command = lambda:database.search_by_choice(connection,entry.get().strip(),setandget(check_by,entry),
+    ))
 
     bg_label.place(x = 0, y = 0)
     name_radio_button.place(x = 400, y = 120)
     number_radio_button.place(x = 500, y = 120)
     s_entry.place(x = 395, y = 60,height = 30)
     back_button.place(x = 585, y = 525)
+    opt_label.place(x = 300, y= 120)
     s_entry_label.place(x = 300, y = 59)
+    search_button.place(x = 410, y = 370,height = 70, width = 160)
 
     search_win.mainloop()
 
