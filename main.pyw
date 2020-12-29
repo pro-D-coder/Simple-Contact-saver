@@ -13,7 +13,7 @@ def kill_to_main(tk_object):
     tk_object.destroy()
     menu()
 
-#function that clear text from entry after an operation and return  number, name or nickname as string used at line 205 and 309
+#function that clear text from entry after an operation and return  number, name or nickname as string used at line 269 and 375
 def setandget(check_by,entry):
     entry.set("")
     return check_by.get().strip()
