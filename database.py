@@ -19,7 +19,12 @@ DELETE_BY_NAME = "DELETE FROM contact WHERE name = ?;"
 DELETE_BY_NUMBER = "DELETE FROM contact WHERE number = ?;"
 #variable that store quary for deleting info using nickname from contact table
 DELETE_BY_NICKNAME = "DELETE FROM contact WHERE nickname = ?;"
-
+#variable that store quary for searching recommandation info from contact
+GET_contact_BY_NAME_RE = "SELECT name FROM contact WHERE name LIKE ? || '%';"
+#variable that store quary for searching recommandation info from contact
+GET_contact_BY_NUMBER_RE = "SELECT number FROM contact WHERE number LIKE ? || '%';"
+#variable that store quary for searching recommandation info from contact
+GET_contact_BY_NICKNAME_RE = "SELECT nickname FROM contact WHERE nickname LIKE ? || '%';"
 # Function that return connection between database
 def connect():
     return sqlite3.connect("data.db")
@@ -117,3 +122,17 @@ def delete_by_choice(connection,entry,delete_by):
                     messagebox.showerror("No contact","Number Not Exist!!")
     except Exception as e:
         messagebox.showerror("Error",entry)
+
+#Function that return recommandation list of tuple
+def search_recom(connection,name,check_by):
+    with connection:
+        cur = connection.cursor()
+        if str(check_by.get()) == "name":
+            search_result = cur.execute(GET_contact_BY_NAME_RE, (name,)).fetchall()
+            return search_result
+        elif str(check_by.get()) == "number":
+            search_result = cur.execute(GET_contact_BY_NUMBER_RE, (name,)).fetchall()
+            return search_result
+        else:
+            search_result = cur.execute(GET_contact_BY_NICKNAME_RE, (name,)).fetchall()
+            return search_result

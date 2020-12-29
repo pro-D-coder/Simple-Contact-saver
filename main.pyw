@@ -1,10 +1,12 @@
 import database   # importing database.py(user defined) file for database interaction.
 import tkinter as tk  # importing Tkinter for GUI.
 from PIL import ImageTk, Image # importing PIL for rendering image.
+import threading as th
+from time import sleep
         
 # making connection for database
 connection = database.connect()
-database.Create_tables(connection)
+database.Create_tables(connection)    
 
 #Function that close the passed tkinter object and open the main window
 def kill_to_main(tk_object):
@@ -28,6 +30,9 @@ def insert_window():
     global insert_win
     insert_win = tk.Tk() # making a tkinter object
     insert_win.title("INSERT CONTACT")  # title of window
+    icon_image = Image.open("favicon.ico")      #icon For title bar
+    icon_image = ImageTk.PhotoImage(icon_image) 
+    insert_win.iconphoto(False, icon_image)   #function that set icon in title bar
     
     image = Image.open("insert_bg.jpg")                # Background Image for main window ----
     randered_image = ImageTk.PhotoImage(image)                                                      #
@@ -125,6 +130,9 @@ def search_window():
     global search_win
     search_win = tk.Tk() #making a tkinter object
     search_win.title("SEARCH CONTACT")  #title of window
+    icon_image = Image.open("favicon.ico")      #icon For title bar
+    icon_image = ImageTk.PhotoImage(icon_image) 
+    search_win.iconphoto(False, icon_image)   #function that set icon in title bar
     
     image = Image.open("insert_bg.jpg")                # Background Image for main window ----
     randered_image = ImageTk.PhotoImage(image)                                                      #
@@ -133,12 +141,13 @@ def search_window():
     w = image_render("insert_bg.jpg").width()           # taking the height and width of bg image for size of window                                                           
     h = image_render("insert_bg.jpg").height()                                                                    #
     search_win.geometry('%dx%d+0+0' % (w,h))                             # setting the size of window equal to bg image size
-    search_win.maxsize(w,h)     #restricting the window to be maximize
+    search_win.maxsize(w,h)     #restricting the window to be maximize\
     
     check_by = tk.StringVar()  # variable that store user selection for searching by name, number or nickname
     check_by.set("name")    # setting variable to name radio button
     global entry
     entry = tk.StringVar() # variable that store user entry for searching
+    
     #name radio_button
     name_radio_button = tk.Radiobutton(search_win,
      text = "Name", 
@@ -193,7 +202,62 @@ def search_window():
     padx = 20,
     pady = 15,
     )
-    
+    #list box for search recommandation
+    re_listbox = tk.Listbox(search_win,
+    height = 5,  
+    width = 40,  
+    bg = "#d8d8d8", 
+    activestyle = 'dotbox',  
+    )
+    # Function that set search entry with listbox current selection
+    def set_entry():
+        try:
+            selected = re_listbox.curselection()
+        except:
+            pass
+        if len(selected) > 0:
+            selected = re_listbox.get(selected[0])
+            entry.set(selected)
+# Function that shows search recommandation in listbox using thread
+    def show_recommandation(check_by): 
+        connection = database.connect()
+        database.Create_tables(connection)  
+        while(True):
+            try:
+                focus = str(search_win.focus_get())   #check that if entry is selected or not
+            except Exception as e:
+                pass
+            if focus == ".!entry":
+                try:
+                    re_listbox.place(x = 395, y = 90)  #if entry is selected then place it
+                except Exception as e:
+                    pass
+                word = " "
+                try:
+                    re_listbox.delete(0, re_listbox.size()) #deleting entry of listbox in their is no word in entry
+                except:
+                    pass
+                i = 0
+                while(word):
+                   re_listbox.bind_all("<Double-Button-1>",set_entry())  #binding mouse button to listbox selection(on click selection will be wrote in search entry)
+                   word = str(entry.get())
+                   list_re = database.search_recom(connection, word, check_by) #getting data from database for recommandation
+                   try:
+                       re_listbox.insert(i, list_re[i][0])  #inserting item in listbox for recommandation
+                       i += 1
+                       sleep(1)
+                   except Exception as e:
+                       pass
+                       break
+            else:
+                try:
+                    re_listbox.place_forget() #Hiding list box when entry is not selected.
+                except:
+                    pass
+    #making thread for showing recommandation 
+    search_thread = th.Thread(target = show_recommandation, args = (check_by,), daemon = True)
+    #starting thread
+    search_thread.start()
     #image for search Button
     search_image = Image.open("search.png")
     search_image = ImageTk.PhotoImage(search_image)
@@ -213,16 +277,15 @@ def search_window():
     
 
     bg_label.place(x = 0, y = 0)                  #placing all the widegts in main window
-    name_radio_button.place(x = 400, y = 120)                                           #
-    number_radio_button.place(x = 470, y = 120)                                         #
-    nickname_radio_button.place(x = 565, y = 120)                                       #
+    name_radio_button.place(x = 400, y = 250)                                           #
+    number_radio_button.place(x = 470, y = 250)                                         #
+    nickname_radio_button.place(x = 565, y = 250)                                       #
     s_entry.place(x = 395, y = 60,height = 30)                                          # 
     back_button.place(x = 585, y = 525)                                                 #
-    opt_label.place(x = 300, y= 120)                                                    #
+    opt_label.place(x = 300, y= 250)                                                    #
     s_entry_label.place(x = 300, y = 59)                                                #
     #recent_list.place(x = 400, y = 160,width = 235)
     search_button.place(x = 410, y = 370,height = 70, width = 160)               #end here  
-
     search_win.mainloop()
 
 # Function that delete contact
@@ -231,6 +294,9 @@ def delete_window():
     global delete_win
     delete_win = tk.Tk() # making a tkinter object
     delete_win.title("DELETE CONTACT")  # title of window
+    icon_image = Image.open("favicon.ico")      #icon For title bar
+    icon_image = ImageTk.PhotoImage(icon_image) 
+    delete_win.iconphoto(False, icon_image)   #function that set icon in title bar
     
     image = Image.open("insert_bg.jpg")                # Background Image for main window ----
     randered_image = ImageTk.PhotoImage(image)                                                      #
@@ -325,6 +391,9 @@ def menu():
     global wel_scr
     wel_scr = tk.Tk() #making a tkinter object
     wel_scr.title("Contact Saver By D")  #title of application
+    icon_image = Image.open("favicon.ico")      #icon For title bar
+    icon_image = ImageTk.PhotoImage(icon_image) 
+    wel_scr.iconphoto(False, icon_image)   #function that set icon in title bar
     
     image = Image.open("BG.jpg")                            # Background Image for main window ----
     randered_image = ImageTk.PhotoImage(image)                                                            #
