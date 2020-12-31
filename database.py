@@ -92,7 +92,7 @@ def delete_by_choice(connection,entry,delete_by):
                 cur = connection.cursor()
                 search_result = cur.execute(GET_contact_BY_NAME, (entry,)).fetchone()
                 if search_result != None:
-                    ask = messagebox.askquestion("Warning","Do You Really Want To Insert!")
+                    ask = messagebox.askquestion("Warning","Do You Really Want To Delete!")
                     if ask == 'yes':
                         messagebox.showinfo("Delete Window","Contact deleted with:\nName: "+ str(search_result[1]) +"\nNumber: " + str(search_result[2]) + "\nNickname: " + str(search_result[3]))
                         connection.execute(DELETE_BY_NAME, (entry, ))
@@ -103,7 +103,7 @@ def delete_by_choice(connection,entry,delete_by):
                 cur = connection.cursor()
                 search_result = cur.execute(GET_contact_BY_NICKNAME, (entry,)).fetchone()
                 if search_result != None:
-                    ask = messagebox.askquestion("Warning","Do You Really Want To Insert!")
+                    ask = messagebox.askquestion("Warning","Do You Really Want To Delete!")
                     if ask == 'yes':
                         messagebox.showinfo("Delete window","Contact deleted with:\nName: "+ str(search_result[1]) +"\nNumber: " + str(search_result[2]) + "\nNickname: " + str(search_result[3]))
                         connection.execute(DELETE_BY_NICKNAME, (entry, ))
@@ -114,7 +114,7 @@ def delete_by_choice(connection,entry,delete_by):
                 cur = connection.cursor()
                 search_result = cur.execute(GET_contact_BY_NUMBER, (entry,)).fetchone()
                 if search_result != None:
-                    ask = messagebox.askquestion("Warning","Do You Really Want To Insert!")
+                    ask = messagebox.askquestion("Warning","Do You Really Want To Delete!")
                     if ask == 'yes':
                         messagebox.showinfo("Delete Window","Contact deleted with:\nName: "+ str(search_result[1]) +"\nNumber: " + str(search_result[2]) + "\nNickname: " + str(search_result[3]))
                         connection.execute(DELETE_BY_NUMBER, (entry, ))
