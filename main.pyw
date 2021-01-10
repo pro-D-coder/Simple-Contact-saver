@@ -1,7 +1,7 @@
 import database   # importing database.py(user defined) file for database interaction.
 import tkinter as tk  # importing Tkinter for GUI.
 from PIL import ImageTk, Image # importing PIL for rendering image.
-import threading as th
+import threading as th #importing thread for making threads
 from time import sleep
         
 # making connection for database
