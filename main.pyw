@@ -89,6 +89,14 @@ def insert_window():
         text = "NICKNAME :", 
         bg = "white", 
         font = ("Times new roman", 15),)
+    #Function that add contact to database and clear the entrys
+    def add_contact():
+        database.add_contact(connection, name.get().strip(),  # passing values to addcontact function
+        number.get().strip(),
+        nickname.get().strip())
+        name.set("")
+        number.set("")
+        nickname.set("")
     # insert button for appending data in database
     button_image = Image.open("insert.png")
     r_button_image = ImageTk.PhotoImage(button_image)
@@ -96,9 +104,7 @@ def insert_window():
         image = r_button_image,
         relief = tk.FLAT,
         bd = 0, 
-        command = lambda:database.add_contact(connection, name.get().strip(),
-         number.get().strip(),
-          nickname.get().strip()), # passing values to addcontact function
+        command = lambda:add_contact(), 
         )
     #Button for going back to main window
     back_button = tk.Button(
@@ -239,7 +245,10 @@ def search_window():
                     pass
                 i = 0
                 while(word):
-                   re_listbox.bind_all("<Double-Button-1>",set_entry())  #binding mouse button to listbox selection(on click selection will be wrote in search entry)
+                   try:
+                       re_listbox.bind_all("<Double-Button-1>",set_entry())  #binding mouse button to listbox selection(on click selection will be wrote in search entry)
+                   except:
+                       pass
                    word = str(entry.get())
                    list_re = database.search_recom(connection, word, check_by) #getting data from database for recommandation
                    try:
@@ -423,29 +432,28 @@ def update_window():
     #Label for showing name of contact to be updated
     update_name_label = tk.Label(
     update_win,
-    text= " ", 
+    text= "Select Contact To Update:", 
     bg = "white", 
     font = ("Times new roman", 14),
     )
+    #Function used by thread for getting user selection
     def set_contact_to_up():
         while True:
             try:
-                cur_sel = contact_listbox.curselection()
-                cur_sel = cur_sel[0]
-                cur_sel = str(contact_listbox.get(cur_sel))
-                cur_sel = cur_sel.split(" ")
-                nick = cur_sel[3]
-                contact_to_update.set(cur_sel[1])
-                nickname.set(nick)
+                cur_sel = contact_listbox.curselection() #getting user selection
+                cur_sel = cur_sel[0] #selecting the first item index
+                cur_sel = str(contact_listbox.get(cur_sel)) #getting the item
+                cur_sel = cur_sel.split(" ") #making list of selection for filling in entrys
+                contact_to_update.set(cur_sel[1]) #getting name of contact who is gone be update
+                nickname.set(cur_sel[3]) #setting all entrys with current selected contact
                 name.set(cur_sel[1])
                 number.set(cur_sel[2])
-                cur_sel = "Enter New Detail For {} :".format(cur_sel[1])
+                cur_sel = "Enter New Detail For {} :".format(cur_sel[1]) #setting info label text for a selected contact
                 update_name_label.update()
-                update_name_label.configure(text = cur_sel)
-                
-            except Exception:
+                update_name_label.configure(text = cur_sel)   
+            except Exception as e:
                 pass
-
+#funciton that insert contacts in listbox in this format (if/name/number/nickname)
     def fill_list():
         for i,z in enumerate(database.get_all_contact(connection)):
             try:
@@ -453,8 +461,8 @@ def update_window():
             except Exception as e:
                 print(e)
                 break
-    fill_list()
-    
+    fill_list() #Filling Listbox with contacts
+
     # Entry and Label for name.
     name_entry = tk.Entry(
         update_win,
@@ -498,23 +506,22 @@ def update_window():
         text = "NEW NICKNAME :", 
         bg = "white", 
         font = ("Times new roman", 12),)
-
+    #thread thats get user selection in background and use set_contact_to_up function
     thread_ = th.Thread(target=set_contact_to_up,daemon=True)
     thread_.start()
-
+#Function that update contact in database and clear entrys also set info label with its default value
     def update_and_task():
-        database.update_contact(connection,str(name.get()).strip(" "),
-        str(number.get()).strip(" "),
-        str(nickname.get()).strip(" "),
-        str(contact_to_update.get()))
-        contact_listbox.delete(0,contact_listbox.size())
-        fill_list()
-        name.set("")
-        number.set("")
-        nickname.set("")
-        update_name_label.update()
-        update_name_label.configure(text = "")
-    
+            database.update_contact(connection,str(name.get()).strip(" "),
+            str(number.get()).strip(" "),
+            str(nickname.get()).strip(" "),
+            str(contact_to_update.get()))
+            contact_listbox.delete(0,contact_listbox.size()) #removing previous data from listbox
+            fill_list() #After clicking on update button filling the listbox again with new data
+            name.set("")
+            number.set("")
+            nickname.set("")
+            update_name_label.update()
+            update_name_label.configure(text = "Select Contact To Update:")   
     # update button for updating data in database.
     button_image = Image.open("update.png")
     button_image = ImageTk.PhotoImage(button_image)
@@ -538,18 +545,18 @@ def update_window():
 
     
     update_button.place(x = 410, y = 370,height = 70, width = 160)      #placing all the widgets in window
-    contact_scrollbar.place(x = 246, y = 60)
-    update_name_label.place(x = 300, y = 110)
-    bg_label.place(x = 0 , y = 0)                   
+    contact_scrollbar.place(x = 246, y = 60)                                                              #
+    update_name_label.place(x = 300, y = 110)                                                             #
+    bg_label.place(x = 0 , y = 0)                                                                         #
     nickname_entry.place(x = 440, y = 280,height = 25,width = 210)                                        #
     nickname_label.place(x = 299, y = 280)                                                                #
     number_label.place(x = 299, y = 210)                                                                  #
     number_entry.place(x = 430, y = 210,height = 25,width = 220)                                          #
     name_label.place(x = 300, y = 150)                                                                    #
-    name_entry.place(x = 405, y = 150,height = 25)
-    contact_listbox.place(x = 20, y = 60)
-    back_button.place(x = 585, y = 525)
-    update_win.mainloop()
+    name_entry.place(x = 405, y = 150,height = 25)                                                        #
+    contact_listbox.place(x = 20, y = 60)                                                                 #
+    back_button.place(x = 585, y = 525)                                                           #END HERE
+    update_win.mainloop() #mainloop of update window
 #Function for the main window
 def menu():  
     global wel_scr

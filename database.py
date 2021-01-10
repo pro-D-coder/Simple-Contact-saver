@@ -156,8 +156,32 @@ def search_recom(connection,name,check_by):
 def update_contact(connection,name,number,nickname,contact_to_update):
     with connection:
         cur = connection.cursor()
-        ask = messagebox.askquestion("Warning","Do You Really Want To Update!")
-        if ask == 'yes':
+        selected_data = cur.execute(GET_contact_BY_NAME,(contact_to_update,)).fetchall()
+        print(selected_data)
+        check = False
+        all_data = connection.execute(SELECT_EVERYTHING).fetchall()
+        for i in range(0, len(all_data)):
+                try:
+                    if all_data[i][0] == selected_data[0][0]:
+                        pass
+                    else:
+                        if(all_data[i][1] == name):
+                            check = True
+                            messagebox.showerror("Name Error", "Name Already Exist!!")
+                            break
+                        if(all_data[i][2] == number):
+                            check = True
+                            messagebox.showerror("Number Error", "Number Already Exist!!")
+                            break 
+                        if(all_data[i][3] == nickname):
+                            check = True
+                            messagebox.showerror("Nickname Error", "Nickname Already Exist!!")
+                            break
+                except Exception as E:
+                    print(E) 
+        if check != True:
+            ask = messagebox.askquestion("Warning","Do You Really Want To Update!")
+            if ask == 'yes':
                 cur.execute(UPDATE_contact_WITH_NAME, (name, contact_to_update,))
                 cur.execute(UPDATE_contact_WITH_NUMBER, (number, contact_to_update,))
                 cur.execute(UPDATE_contact_WITH_NICKNAME, (nickname, contact_to_update,))
