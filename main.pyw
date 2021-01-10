@@ -218,7 +218,7 @@ def search_window():
         if len(selected) > 0:
             selected = re_listbox.get(selected[0])
             entry.set(selected)
-# Function that shows search recommandation in listbox using thread
+    # Function that shows search recommandation in listbox using thread
     def show_recommandation(check_by): 
         connection = database.connect()
         database.Create_tables(connection)  
@@ -229,7 +229,7 @@ def search_window():
                 pass
             if focus == ".!entry":
                 try:
-                    re_listbox.place(x = 395, y = 90)  #if entry is selected then place it
+                    re_listbox.place(x = 395, y = 90)  #if entry is selected then place hidden listbox
                 except Exception as e:
                     pass
                 word = " "
@@ -386,6 +386,170 @@ def delete_window():
     delete_button.place(x = 410, y = 370,height = 70, width = 160)              #end here
     delete_win.mainloop()
 
+def update_window():
+    wel_scr.destroy()  # closing the first window
+    global update_win
+    update_win = tk.Tk() # making a tkinter object
+    update_win.title("UPDATE CONTACT")  # title of window
+    icon_image = Image.open("favicon.ico")      #icon For title bar
+    icon_image = ImageTk.PhotoImage(icon_image) 
+    update_win.iconphoto(False, icon_image)   #function that set icon in title bar
+    
+    image = Image.open("insert_bg.jpg")                # Background Image for main window ----
+    randered_image = ImageTk.PhotoImage(image)                                                      #
+    bg_label = tk.Label(update_win, image = randered_image)   #--------------- End Here--------------
+    
+    w = image_render("insert_bg.jpg").width()           # taking the height and width of bg image for size of window                                                           
+    h = image_render("insert_bg.jpg").height()                                                                    #
+    update_win.geometry('%dx%d+0+0' % (w,h))                             # setting the size of window equal to bg image size
+    update_win.maxsize(w,h)       #restricting the window to be maximize
+    contact_to_update = tk.StringVar()
+    name =  tk.StringVar()  #variable for storing name passed from name entry
+    number =  tk.StringVar() #variable for storing number passed from number entry
+    nickname = tk.StringVar() #variable for storing nickname passed from nickname entry
+    
+    #listbox that contain all contact
+    contact_listbox = tk.Listbox(update_win,
+    height = 30,  
+    width = 40,  
+    bg = "#d8d8d8",
+    activestyle = 'dotbox',
+    )
+    #Scroll Bar for listbox
+    contact_scrollbar = tk.Scrollbar(update_win,
+    )
+    contact_listbox.config(yscrollcommand = contact_scrollbar.set)
+    contact_scrollbar.config(command = contact_listbox.yview)
+    #Label for showing name of contact to be updated
+    update_name_label = tk.Label(
+    update_win,
+    text= " ", 
+    bg = "white", 
+    font = ("Times new roman", 14),
+    )
+    def set_contact_to_up():
+        while True:
+            try:
+                cur_sel = contact_listbox.curselection()
+                cur_sel = cur_sel[0]
+                cur_sel = str(contact_listbox.get(cur_sel))
+                cur_sel = cur_sel.split(" ")
+                nick = cur_sel[3]
+                contact_to_update.set(cur_sel[1])
+                nickname.set(nick)
+                name.set(cur_sel[1])
+                number.set(cur_sel[2])
+                cur_sel = "Enter New Detail For {} :".format(cur_sel[1])
+                update_name_label.update()
+                update_name_label.configure(text = cur_sel)
+                
+            except Exception:
+                pass
+
+    def fill_list():
+        for i,z in enumerate(database.get_all_contact(connection)):
+            try:
+                contact_listbox.insert(i, str(z[0])+ " "+ z[1]+ " "+ z[2]+ " "+z[3])  #inserting item in listbox for recommandation
+            except Exception as e:
+                print(e)
+                break
+    fill_list()
+    
+    # Entry and Label for name.
+    name_entry = tk.Entry(
+        update_win,
+        font = ("Arial", 12,"bold"),
+        bd = 0, 
+        bg = "#1c1c1a",
+        width = 27,
+        fg = "white",
+        textvariable = name)
+    name_label = tk.Label(
+        update_win, 
+        text = "NEW NAME :", 
+        bg = "white", 
+        font = ("Times new roman", 12),)
+    # Entry and Label for Number.
+    number_entry = tk.Entry(
+        update_win,
+        font = ("Arial", 12,"bold"),
+        bd = 0, 
+        bg = "#1c1c1a",
+        width = 10,
+        fg = "white",
+        textvariable = number)
+    number_label = tk.Label(
+        update_win, 
+        text = "NEW NUMBER :", 
+        bg = "white", 
+        font = ("Times new roman", 12),)
+    
+    # Entry and Label for Nickname.
+    nickname_entry = tk.Entry(
+        update_win,
+        font = ("Arial", 12,"bold"),
+        bd = 0, 
+        bg = "#1c1c1a",
+        width = 10,
+        fg = "white",
+        textvariable = nickname,)
+    nickname_label = tk.Label(
+        update_win, 
+        text = "NEW NICKNAME :", 
+        bg = "white", 
+        font = ("Times new roman", 12),)
+
+    thread_ = th.Thread(target=set_contact_to_up,daemon=True)
+    thread_.start()
+
+    def update_and_task():
+        database.update_contact(connection,str(name.get()).strip(" "),
+        str(number.get()).strip(" "),
+        str(nickname.get()).strip(" "),
+        str(contact_to_update.get()))
+        contact_listbox.delete(0,contact_listbox.size())
+        fill_list()
+        name.set("")
+        number.set("")
+        nickname.set("")
+        update_name_label.update()
+        update_name_label.configure(text = "")
+    
+    # update button for updating data in database.
+    button_image = Image.open("update.png")
+    button_image = ImageTk.PhotoImage(button_image)
+    update_button = tk.Button(update_win,
+        image = button_image,
+        relief = tk.FLAT,
+        bd = 0, 
+        command = lambda:update_and_task(), # passing values to addcontact function
+        )
+    #Button for going back to main window
+    back_button = tk.Button(
+        master=update_win,
+        text = "Back",
+        bd = 0,
+        relief  = tk.FLAT,
+        command = lambda:kill_to_main(update_win),
+        bg = "#d8d8d8",
+        padx = 20,
+        pady = 15,   
+    )
+
+    
+    update_button.place(x = 410, y = 370,height = 70, width = 160)      #placing all the widgets in window
+    contact_scrollbar.place(x = 246, y = 60)
+    update_name_label.place(x = 300, y = 110)
+    bg_label.place(x = 0 , y = 0)                   
+    nickname_entry.place(x = 440, y = 280,height = 25,width = 210)                                        #
+    nickname_label.place(x = 299, y = 280)                                                                #
+    number_label.place(x = 299, y = 210)                                                                  #
+    number_entry.place(x = 430, y = 210,height = 25,width = 220)                                          #
+    name_label.place(x = 300, y = 150)                                                                    #
+    name_entry.place(x = 405, y = 150,height = 25)
+    contact_listbox.place(x = 20, y = 60)
+    back_button.place(x = 585, y = 525)
+    update_win.mainloop()
 #Function for the main window
 def menu():  
     global wel_scr
@@ -440,9 +604,21 @@ def menu():
         font = ("Arial", 12, "bold"),
         command = delete_window
         )
+    #Button for updating contact
+    update_button = tk.Button(
+        wel_scr,
+        text = "UPDATE CONTACT", 
+        bg = "black",
+        fg = "white",
+        padx = 36.5,
+        pady = 20,
+        font = ("Arial", 12, "bold"),
+        command = update_window,
+        )
     # placing all the button in main window.
-    delete_button.place(x = 23, y = 600)
-    search_button.place(x = 23, y = 320)
+    update_button.place(x = 23, y = 600)
+    delete_button.place(x = 23, y = 420)
+    search_button.place(x = 23, y = 240)
     insert_button.place(x = 23, y = 80)
     bg_label.place(x = 0, y = 0)
     wel_scr.mainloop()   # mainloop always required.

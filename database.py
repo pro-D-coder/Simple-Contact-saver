@@ -3,8 +3,8 @@ from tkinter import messagebox #importing messagebox for showing info and error 
 
 #variable that store quary for creating a contact table
 CREATE_TABLE_contact = "CREATE TABLE IF NOT EXISTS contact (id INTEGER PRIMARY KEY, name TEXT, number TEXT,nickname TEXT);"
-#variable that store quary for selecting only name column from contact table
-SELECT_NAME = "SELECT name FROM contact"
+#variable that store quary for selecting everything from contact table
+SELECT_EVERYTHING = "SELECT * FROM contact"
 #variable that store quary for inserting a contact in contact table
 INSERT_contact = "INSERT INTO contact (name, number, nickname) VALUES (?, ?, ?);"
 #variable that store quary for getting info using name from contact table
@@ -25,6 +25,12 @@ GET_contact_BY_NAME_RE = "SELECT name FROM contact WHERE name LIKE ? || '%';"
 GET_contact_BY_NUMBER_RE = "SELECT number FROM contact WHERE number LIKE ? || '%';"
 #variable that store quary for searching recommandation info from contact
 GET_contact_BY_NICKNAME_RE = "SELECT nickname FROM contact WHERE nickname LIKE ? || '%';"
+#variable that store quary for updating name in contact
+UPDATE_contact_WITH_NAME = "UPDATE contact SET name = ? WHERE name = ?;"
+#variable that store quary for updating number in contact
+UPDATE_contact_WITH_NUMBER = "UPDATE contact SET number = ? WHERE name = ?;"
+#variable that store quary for updating nickname in contact
+UPDATE_contact_WITH_NICKNAME = "UPDATE contact SET nickname = ? WHERE name = ?;"
 # Function that return connection between database
 def connect():
     return sqlite3.connect("data.db")
@@ -39,21 +45,31 @@ def add_contact(connection, name, number, nickname):
     with connection:
         cur = connection.cursor()
         check = False
-        all_name = connection.execute(SELECT_NAME).fetchall()
-        for i in range(0, len(all_name)):
-                if(all_name[i][0] == name):
+        all_data = connection.execute(SELECT_EVERYTHING).fetchall()
+        for i in range(0, len(all_data)):
+                if(all_data[i][1] == name):
                     check = True
                     messagebox.showerror("Name Error", "Name Already Exist!!")
-                    break  
+                    break
+                if(all_data[i][2] == number):
+                    check = True
+                    messagebox.showerror("Number Error", "Number Already Exist!!")
+                    break 
+                if(all_data[i][3] == nickname):
+                    check = True
+                    messagebox.showerror("Nickname Error", "Nickname Already Exist!!")
+                    break 
         if check != True:
             ask = messagebox.askquestion("Warning","Do You Really Want To Insert!")
             if ask == 'yes':
                 cur.execute(INSERT_contact, (name, number, nickname))
                 messagebox.showinfo("Insert Window","Contact inserted !")
                 cur.close()
-#def get_all_contact(connection):
-#    with connection:
-#        return connection.execute(GET_ALL_contact).fetchall()
+
+#function that return all contact with name only
+def get_all_contact(connection):
+    with connection:
+        return connection.execute(SELECT_EVERYTHING).fetchall()
 
 # Function that search for info in database
 def search_by_choice(connection, entry, check_by):
@@ -136,3 +152,13 @@ def search_recom(connection,name,check_by):
         else:
             search_result = cur.execute(GET_contact_BY_NICKNAME_RE, (name,)).fetchall()
             return search_result
+
+def update_contact(connection,name,number,nickname,contact_to_update):
+    with connection:
+        cur = connection.cursor()
+        ask = messagebox.askquestion("Warning","Do You Really Want To Update!")
+        if ask == 'yes':
+                cur.execute(UPDATE_contact_WITH_NAME, (name, contact_to_update,))
+                cur.execute(UPDATE_contact_WITH_NUMBER, (number, contact_to_update,))
+                cur.execute(UPDATE_contact_WITH_NICKNAME, (nickname, contact_to_update,))
+                messagebox.showinfo("Update Window","Contact updated!!")
